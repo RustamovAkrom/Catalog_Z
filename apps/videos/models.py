@@ -6,7 +6,8 @@ class Tag(AbstractBaseModel):
     name = models.CharField(max_length=100)
 
     class Meta:
-        abstract = True
+        verbose_name = "tag"
+        verbose_name_plural = "tags"
 
     def __str__(self) -> str:
         return self.name
