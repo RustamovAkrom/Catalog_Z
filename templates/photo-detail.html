@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Catlog-Z {{ photo.title }} {% endblock %}
+{% block content %}
+
+<div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="{% static 'img/hero.jpg' %}">
+    <form class="d-flex tm-search-form">
+        <input class="form-control tm-search-input" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success tm-search-btn" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
+
+<div class="container-fluid tm-container-content tm-mt-60">
+    <div class="row mb-4">
+        <h2 class="col-12 tm-text-primary">{{ photo.title }}</h2>
+    </div>
+    <div class="row tm-mb-90">            
+        <div class="col-xl-8 col-lg-7 col-md-6 col-sm-12">
+            <img src="{{ photo.photo.url }}" alt="Image" class="img-fluid">
+        </div>
+        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
+            <div class="tm-bg-gray tm-video-details">
+                <p class="mb-4">
+                    Please support us by making <a href="https://paypal.me/templatemo" target="_parent" rel="sponsored">a PayPal donation</a>. Nam ex nibh, efficitur eget libero ut, placerat aliquet justo. Cras nec varius leo.
+                </p>
+                <div class="text-center mb-5">
+                    <a href="{{ photo.photo.url }}" class="btn btn-primary tm-btn-big">Download</a>
+                </div>                    
+                <div class="mb-4 d-flex flex-wrap">
+                    <div class="mr-4 mb-2">
+                        <span class="tm-text-gray-dark">Dimension: </span><span class="tm-text-primary">{{ photo.dimension }}</span>
+                    </div>
+                    <div class="mr-4 mb-2">
+                        <span class="tm-text-gray-dark">Format: </span><span class="tm-text-primary">{{ photo.format }}</span>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <h3 class="tm-text-gray-dark mb-3">License</h3>
+                    <p>{{ photo.license }}</p>
+                </div>
+                <div>
+                    <h3 class="tm-text-gray-dark mb-3">Tags</h3>
+                    {% for tag in photo.tags.all %}
+                    <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <h2 class="col-12 tm-text-primary">
+            Related Photos
+        </h2>
+    </div>
+
+    <div class="row mb-3 tm-gallery">
+        {% for photo_detail in photos %}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="{{ photo_detail.photo.url }}" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>{{ photo_detail.title }}</h2>
+                        <a href="{% url 'photos:detail' photo_detail.pk %}">View more</a>
+                    </figcaption>                    
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">{{ photo_detail.created_at.date }}</span>
+                    <span>12,460 views</span>
+                </div>
+            </div>
+        {% endfor %} 
+    </div> <!-- row -->
+
+</div> <!-- container-fluid, tm-container-content -->
+{% block scripts %}
+<script src="{% static 'js/plugins.js' %}"></script>
+    <script>
+        $(window).on("load", function() {
+            $('body').addClass('loaded');
+        });
+    </script>
+{% endblock %}
+{% endblock %}

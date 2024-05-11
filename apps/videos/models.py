@@ -15,6 +15,7 @@ class Tag(AbstractBaseModel):
 
 class Video(AbstractBaseModel):
     title = models.CharField(max_length=80)
+    video = models.FileField(upload_to="videos/")
     resolution = models.CharField(max_length=9)
     format = models.CharField(max_length=3)
     duration = models.TimeField()

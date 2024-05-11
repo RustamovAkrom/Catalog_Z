@@ -1,5 +1,7 @@
 __pycache__/
 .idea/
 env/
+Catalog_z_template/
+media/
 .env
 db.sqlite3
