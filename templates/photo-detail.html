@@ -75,4 +75,12 @@
     </div> <!-- row -->
 
 </div> <!-- container-fluid, tm-container-content -->
+{% block scripts %}
+<script src="{% static 'js/plugins.js' %}"></script>
+<script>
+    $(window).on("load", function() {
+        $('body').addClass('loaded');
+    });
+</script>
+{% endblock %}
 {% endblock %}

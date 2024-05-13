@@ -1,13 +1,21 @@
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
 from .models import Photo, Tag
 from .forms import ContactForm
 
 
 def photos_page(request):
     photos = Photo.objects.all()
-    print(photos)
+
+    page = request.GET.get("page", 1)
+    size = request.GET.get("size", 8)
+
+    paginator = Paginator(photos, size)
+
+    page_obj = paginator.get_page(page)
+
     return render(request, "index.html", {
-        "photos": photos
+        "page_obj": page_obj
     })
 
 
@@ -29,7 +37,7 @@ def contact_page(request):
             form.save()
             return redirect("photos:home")
         else:
-            return redirect("photos:contact")
+            return redirect("photos:conact")
     form = ContactForm()
     return render(request, "contact.html", {
         "form": form

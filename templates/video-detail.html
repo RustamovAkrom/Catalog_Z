@@ -3,8 +3,12 @@
 {% block title %}{% endblock %}
 {% block content %}
 
-<div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="{% static 'img/hero.jpg' %}">
-    <form class="d-flex tm-search-form">
+<div class="tm-hero d-flex justify-content-center align-items-center" id="tm-video-container">
+    <video autoplay muted loop id="tm-video">
+        <source src="{% static 'video/hero.mp4' %}" type="video/mp4">
+    </video>  
+    <i id="tm-video-control-button" class="fas fa-pause"></i>
+    <form class="d-flex position-absolute tm-search-form">
         <input class="form-control tm-search-input" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success tm-search-btn" type="submit">
             <i class="fas fa-search"></i>
@@ -47,13 +51,9 @@
                 </div>
                 <div>
                     <h3 class="tm-text-gray-dark mb-3">Tags</h3>
+                    {% for tag in video.tags.all %}
                     <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Cloud</a>
-                    <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Bluesky</a>
-                    <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Nature</a>
-                    <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Background</a>
-                    <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Timelapse</a>
-                    <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Night</a>
-                    <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Real Estate</a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -70,12 +70,12 @@
                     <!-- <img src="img/img-01.jpg" alt="Image" class="img-fluid"> -->
                     <video src="{{ video_detail.video.url }}" class="img-fluid"></video>
                     <figcaption class="d-flex align-items-center justify-content-center">
-                        <h2>{{ video.title }}</h2>
-                        <a href="{% url 'videos:detail' video.pk %}">View more</a>
+                        <h2>{{ video_detail.title }}</h2>
+                        <a href="{% url 'videos:detail' video_detail.pk %}">View more</a>
                     </figcaption>                    
                 </figure>
                 <div class="d-flex justify-content-between tm-text-gray">
-                    <span class="tm-text-gray-light">{{ video.created_at.date }}</span>
+                    <span class="tm-text-gray-light">{{ video_detail.created_at.date }}</span>
                     <span>12,460 views</span>
                 </div>
             </div>
@@ -84,4 +84,5 @@
         {% endfor %}     
     </div> <!-- row -->
 </div> <!-- container-fluid, tm-container-content -->
+
 {% endblock %}

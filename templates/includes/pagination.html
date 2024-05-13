@@ -1,0 +1,28 @@
+<div class="row tm-mb-90">
+        <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col">
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary tm-btn-prev mb-2">Previous</a>
+            {% else %}
+                <a href="#" class="btn btn-primary tm-btn-prev mb-2 disabled">Previous</a>
+            {% endif %}
+
+            <div class="tm-paging d-flex">
+                {% if page_obj.has_previous %}
+
+                <a href="?page={{ page_obj.previous_page_number }}" class="active tm-paging-link">{{ page_obj.previous_page_number }}</a>
+                {% endif %}
+
+                <a href="?page={{ page_obj.number }}" class="tm-paging-link">{{ page_obj.number }}</a>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="tm-paging-link">{{ page_obj.next_page_number }}</a>
+                {% endif %}
+            </div>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary tm-btn-next">Next Page</a>
+            {% else %}
+                <a href="#" class="btn btn-primary tm-btn-next disabled">Next Page</a>
+            {% endif %}
+        </div>            
+    </div>
