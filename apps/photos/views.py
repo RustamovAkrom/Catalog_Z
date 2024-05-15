@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
+from celery import shared_task
 from .models import Photo, Tag
 from .forms import ContactForm
 
@@ -53,6 +54,7 @@ def photos_detail_page(request, pk: int):
     })
 
 
+@shared_task
 def contact_page(request):
 
     if request.method == "POST":
