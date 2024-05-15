@@ -1,8 +1,8 @@
-from django.forms import ModelForm
-from .models import Contact
+from django import forms
 
 
-class ContactForm(ModelForm):
-    class Meta:
-        model = Contact
-        fields = ("name", "email", "subject", "message")
+class ContactForm(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Name"}))
+    subject = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Subject"}))
+    message = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Message"}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder":"Email"}))

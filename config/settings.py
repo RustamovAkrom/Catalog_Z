@@ -134,7 +134,7 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# Celery / celery beat / celery result .
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 CELERY_RESULT_BACKEND = "django-db"
@@ -149,3 +149,11 @@ CACHES = {
 CELERY_CACHE_BACKEND = "default"
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+# Email configurations
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smpt.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USER_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD") #Replace with your Gmail app password or account password

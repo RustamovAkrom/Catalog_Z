@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Tag, Photo, Contact
+from .models import Tag, Photo
 
 
 admin.site.register(Tag)
 admin.site.register(Photo)
-admin.site.register(Contact)

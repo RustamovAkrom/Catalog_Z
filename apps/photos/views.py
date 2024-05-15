@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from celery import shared_task
+from config.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from .models import Photo, Tag
 from .forms import ContactForm
 
@@ -60,7 +62,16 @@ def contact_page(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            form.save()
+            name = form.cleaned_data.get("name")
+            subject = form.cleaned_data.get("subject")
+            message = form.cleaned_data.get("message")
+            email = form.cleaned_data.get("from_email")
+
+            send_mail(subject = subject, 
+                      message = f"From: {name}\nEmail: {email}\n\n{message}", 
+                      from_email = EMAIL_HOST_USER, 
+                      recipient_list=[email])
+
             return redirect("photos:home")
         else:
             return redirect("photos:conact")
