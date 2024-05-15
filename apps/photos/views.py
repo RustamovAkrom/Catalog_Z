@@ -9,19 +9,43 @@ def photos_page(request):
 
     page = request.GET.get("page", 1)
     size = request.GET.get("size", 8)
+    search_value = request.GET.get('search', None)
 
     paginator = Paginator(photos, size)
 
     page_obj = paginator.get_page(page)
 
+    if search_value is not None:
+        page_obj = Photo.objects.filter(title__icontains = search_value)
+    else:
+        search_value = ""
+        
     return render(request, "index.html", {
-        "page_obj": page_obj
+        "page_obj": page_obj,
+        "search_value": search_value
     })
 
 
 def photos_detail_page(request, pk: int):
     photos = Photo.objects.all()
     photo = Photo.objects.get(pk = pk)
+
+    search_value = request.GET.get("search", None)
+
+    if search_value is not None:
+        page = request.GET.get("page", 1)
+        size = request.GET.get("size", 8)
+
+        photos = Photo.objects.filter(title__icontains = search_value)
+
+        paginator = Paginator(photos, size)
+        
+        page_obj = paginator.get_page(page)
+
+        return render(request, "index.html", {
+            "page_obj": page_obj,
+            "search_value": search_value
+        })
 
     return render(request, "photo-detail.html", {
         "photos":photos,
@@ -38,6 +62,7 @@ def contact_page(request):
             return redirect("photos:home")
         else:
             return redirect("photos:conact")
+        
     form = ContactForm()
     return render(request, "contact.html", {
         "form": form
