@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  redis:
+    image: redis
+    restart: always
+
+  catalog_z:
+    build: 
+      context: .
+    env_file:
+      - .env
+    container_name: catalog_z
+    command: ["/catalog_z/docker/app.sh"]
+    ports:
+      - 9999:8000
+    depends_on:
+      - redis
+
+  celery:
+    build: 
+      context: .
+    container_name: celery_app
+    command: ["/catalog_z/docker/celery.sh", "celery"]
+    depends_on:
+      - redis
