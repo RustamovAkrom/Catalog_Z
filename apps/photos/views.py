@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
-from django.core.mail import send_mail
 from django.core.paginator import Paginator
-from celery import shared_task
-from config.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+from .tasks import send_email_task
 from .models import Photo, Tag
 from .forms import ContactForm
+import time
 
 
 def photos_page(request):
@@ -56,25 +55,35 @@ def photos_detail_page(request, pk: int):
     })
 
 
-@shared_task
 def contact_page(request):
 
     if request.method == "POST":
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data.get("name")
-            subject = form.cleaned_data.get("subject")
-            message = form.cleaned_data.get("message")
-            email = form.cleaned_data.get("from_email")
+        # form = ContactForm(request.POST)
+        
+        name = request.POST.get("name", None)
+        email = request.POST.get("email", None)
+        subject = request.POST.get("inquiry", None)
+        message = request.POST.get("message", None)
+        
+        if (name and email and subject and message) is not None:
 
-            send_mail(subject = subject, 
-                      message = f"From: {name}\nEmail: {email}\n\n{message}", 
-                      from_email = EMAIL_HOST_USER, 
-                      recipient_list=[email])
+            try:
+                time_time = time.time()
+                
+                send_email_task(subject, message, email)
 
-            return redirect("photos:home")
+                print("-" * 20)
+                print(f"Sending email\nSend time: {time.time() - time_time}\n")
+                print("-" * 20)
+
+                return redirect("photos:home")
+                
+            except Exception as e:
+                print(f"Error sheduling email: {e}")
+                return redirect("photos:contact")
         else:
-            return redirect("photos:conact")
+            return redirect("photos:contact")
+        
         
     form = ContactForm()
     return render(request, "contact.html", {

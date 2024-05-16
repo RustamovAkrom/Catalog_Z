@@ -11,10 +11,6 @@
 
             <form id="contact-form" action="{% url 'photos:contact' %}" method="POST" class="tm-contact-form mx-auto">
                 {% csrf_token %}
-                {{ form.subject }}
-                {{ form.message }}
-                {{ form.email }}
-
                 <div class="form-group">
                     <input type="text" name="name" class="form-control rounded-0" placeholder="Name" required />
                 </div>

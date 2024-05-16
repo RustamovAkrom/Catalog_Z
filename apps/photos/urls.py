@@ -5,7 +5,7 @@ app_name = "photos"
 
 urlpatterns = [
     path('', photos_page, name='home'),
-    path('photo/detail/<int:pk>', photos_detail_page, name="detail"),
-    path('photo/contacts/', contact_page, name="contact"),
-    path('photos/about', about_page, name="about"),
+    path('photo/<int:pk>', photos_detail_page, name="detail"),
+    path('contact/', contact_page, name="contact"),
+    path('about/', about_page, name="about"),
 ]
