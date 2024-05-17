@@ -39,4 +39,13 @@
  + ### [About](http://127.0.0.1:8000/photos/about/) 🧾
  + ### [Contact](http://127.0.0.1:8000/photos/contact/) 📞
 
+## Runing for Docker
+~~~
+dokcer build . -t catalog_z:latest
+~~~
+~~~
+docker run -p 8000:8000 catalog_z:latest
+~~~
+
+
  

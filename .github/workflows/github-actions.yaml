@@ -1,0 +1,86 @@
+
+# name of our workflow
+name: Django CI/CD Workflow
+run-name: ${{ github.actor }} is testing out GitHub Actions 🛸
+# triggers for our workflow
+on:
+  # opening a pull request to master and develop branch will be a trigger
+  pull_request:
+    branches:
+      - develop
+      - master
+  # any code pushed to master and develop branch will also be a trigger
+  push:
+    branches:
+      - master
+      - develop
+
+
+# three job definition
+jobs:
+  run_unittests: # health check job for testing and code formatting check
+    runs-on: ubuntu-latest # os for running the job
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+
+    steps:
+      - name: Checkout repository code # checking our the code at current commit that triggers the workflow
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }} # caching dependency will make our build faster.
+        uses: actions/setup-python@v4 # for more info checkout pip section documentation at https://github.com/actions/cache
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependacies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Tests # running tests
+        run: |
+          echo "SECRET_KEY = 'django-insecure-dummy-secret'" >  ./.env
+          echo "SECRET_KEY = 'django-insecure-dqewrkg^-wzjm8bbt2q2$(cwy0ikn%+b$0a%-2l62e07lw5z#d'" > ./.env
+          echo "EMAIL_HOST_USER = "akromjonrustamov56@gmail.com" > ./.env
+          echo "EMAIL_HOST_PASSWORD = 'qhdcsnmozcnrngih'" > ./.env
+          python manage.py test
+
+    runs-on: ubuntu-latest
+    needs: [package-job] # will require package-job to be successful for triggering
+    if: ${{ github.event_name == 'push' }} # will be fire if the trigger event is a push event.
+    steps:
+      - name: Checkout code # checking out code.
+        uses: actions/checkout@v2
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master # settings up gcloud cli in our job machine.
+        with:
+          version: '270.0.0'
+          service_account_email: ${{ secrets.GKE_EMAIL }} # email address of our service account that will be created with storage and kubernetes permissions
+          service_account_key: ${{ secrets.GKE_PASSWORD }} # service account file.
+      - name: Set Repo Location # steps required to find the image id of our image from contiainer registry
+        id: repo
+        run: echo "::set-output name=repo_name::gcr.io/${{secrets.GKE_PROJECT}}/github-django-actions/app:sha-$(git rev-parse --short HEAD)" # we are setting the image location as output to be used in later step
+      - name: Check Repo Location
+        run: echo ${{ steps.repo.outputs.repo_name }} # checking our repo location
+      - name: Install Helm # helm installation in our runner for deploying.
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+      - name: Connect to kubernetes cluster
+        run: |
+          gcloud container clusters get-credentials ${{secrets.GKE_CLUSTER}} --zone ${{secrets.GKE_ZONE}} --project ${{secrets.GKE_PROJECT}}
+      - name: Helm Deploy # deploying our helm chart to our cluster
+        run: >
+          helm upgrade
+          --install
+          --set image=${{ steps.repo.outputs.repo_name }}
+          --set user=${{ secrets.DB_USER }}
+          --set password=${{ secrets.DB_PASSWORD }}
+          --set host=${{ secrets.DB_HOST }}
+          --set port=${{ secrets.DB_PORT }}
+          --set name=${{ secrets.DB_NAME }}
+          --wait
+          --atomic
+          app
+          ./k8s
+      - name: Check pods # checking pod list to see if they are running.
+        run: kubectl get pods
