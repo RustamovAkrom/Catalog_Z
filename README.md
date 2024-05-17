@@ -46,6 +46,3 @@ dokcer build . -t catalog_z:latest
 ~~~
 docker run -p 8000:8000 catalog_z:latest
 ~~~
-
-
- 
