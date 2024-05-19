@@ -17,7 +17,7 @@ class Tag(AbstractBaseModel):
 class Photo(AbstractBaseModel):
     title = models.CharField(max_length=80)
     photo = models.ImageField(upload_to="photos/")
-    format = models.CharField(max_length=3)
+    format = models.CharField(max_length=4)
     dimension = models.CharField(max_length=9)
     license = models.CharField(max_length=180)
     tags = models.ManyToManyField(Tag, related_name="photos")

@@ -6,3 +6,4 @@ pillow==10.3.0
 django-celery-results==2.5.1
 django-celery-beat==2.6.0
 gunicorn==22.0.0
+requests==2.31.0
